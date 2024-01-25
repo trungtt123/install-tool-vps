@@ -1,0 +1,1 @@
+schtasks /create /tn "tool-vps" /tr "C:\install-tool-vps\run-vps.bat" /sc daily /st 00:00
