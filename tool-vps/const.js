@@ -6,6 +6,7 @@ const API_NGROK_URL = 'http://127.0.0.1:4040';
 const CONFIG_ROOT = __dirname;
 const DATABASE_URL = process.env.DATABASE_URL;
 const PROFILES_PATH = process.env.PROFILES_PATH;
+const NGROK_PATH = process.env.NGROK_PATH;
 module.exports = {
     API_PYTHON_URL,
     CONFIG_ROOT,
@@ -13,5 +14,6 @@ module.exports = {
     FOLDER_PROFILE,
     API_GPM_URL,
     DATABASE_URL,
-    PROFILES_PATH
+    PROFILES_PATH,
+    NGROK_PATH
 };

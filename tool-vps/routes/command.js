@@ -3,7 +3,7 @@ const router = express.Router();
 const helper = require('../Action/Helper/helper');
 const axios = require('axios');
 const moment = require('moment');
-const { API_NGROK_URL, CONFIG_ROOT, PROFILES_PATH } = require('../const');
+const { API_NGROK_URL, CONFIG_ROOT, PROFILES_PATH, NGROK_PATH } = require('../const');
 const cmd = require('node-cmd');
 const os = require('os');
 const cron = require('node-cron');
@@ -39,9 +39,9 @@ async function checkOrResetNgrokActive() {
         const vps = await Vps.findOne({ _id: vpsId });
         cmd.runSync(`taskkill /IM ngrok.exe /F`);
         if (vps && vps.ngrokAuth){
-            cmd.runSync(`cd ${CONFIG_ROOT + "\\ngrok"} && ngrok config add-authtoken ${vps.ngrokAuth}`);
+            cmd.runSync(`cd ${NGROK_PATH} && ngrok config add-authtoken ${vps.ngrokAuth}`);
         }
-        cmd.run(`cd ${CONFIG_ROOT + "\\ngrok"} && ngrok http 7070`);
+        cmd.run(`cd ${NGROK_PATH} && ngrok http 7070`);
         await helper.delay(5);
     }
     catch (e) {
@@ -54,9 +54,9 @@ async function reset_ngrok() {
 }
 
 reset_ngrok()
-// cron.schedule('0 * * * *', async () => {
-//     reset_ngrok()
-// });
+cron.schedule('0 * * * *', async () => {
+    reset_ngrok()
+});
 async function stop_chrome_profile(profile_id) {
     try {
         const database = await dbLocal.getData();
