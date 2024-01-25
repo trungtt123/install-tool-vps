@@ -22,16 +22,11 @@ router.get('/reset_ngrok', async (req, res) => {
 });
 router.get('/update_source_code', async (req, res) => {
     try {
-        const success = command.update_source_code();
-        if (success) return res.status(200).send({
+        res.status(200).send({
             code: "1000",
             message: "OK"
         });
-        return res.status(400).json({
-            code: "9999",
-            message: "FAILED",
-            reason: "Lỗi bất định"
-        });
+        return command.update_source_code();
     }
     catch (e) {
         console.log('Error', e);
