@@ -7,8 +7,8 @@ async function watchFacebook({ browser, profileData, config }) {
     try {
         let page = await navigation.newTab(browser, 'https://www.facebook.com/watch');
         await helper.delay(1000);
-        const randomScroll = helper.randomInt(10, 20);
-        await navigation.closeActiveTab(page);\
+        const randomScroll = helper.randomInt(10, 40);
+        await navigation.closeActiveTab(page);
         return true;
     }
     catch (e) {
