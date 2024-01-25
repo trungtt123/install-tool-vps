@@ -6,7 +6,7 @@ const mouse = require('../../../Action/Mouse/mouse');
 async function watchFacebook({ browser, profileData, config }) {
     try {
         let page = await navigation.newTab(browser, 'https://www.facebook.com/watch');
-        await helper.delay(10);
+        await helper.delay(5);
         const randomScroll = helper.randomInt(20, 40);
         await navigation.closeActiveTab(page);
         return true;
