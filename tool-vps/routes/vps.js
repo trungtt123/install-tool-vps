@@ -20,21 +20,4 @@ router.get('/reset_ngrok', async (req, res) => {
         });
     }
 });
-router.get('/update_source_code', async (req, res) => {
-    try {
-        res.status(200).send({
-            code: "1000",
-            message: "OK"
-        });
-        return command.update_source_code();
-    }
-    catch (e) {
-        console.log('Error', e);
-        return res.status(400).json({
-            code: "9999",
-            message: "FAILED",
-            reason: "Lỗi bất định"
-        });
-    }
-});
 module.exports = router;

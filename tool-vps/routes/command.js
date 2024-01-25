@@ -161,22 +161,9 @@ async function start_chrome_profile(profile_id) {
         };
     }
 }
-function update_source_code() {
-    try {
-        const data = cmd.runSync(`cd ${CONFIG_ROOT} & git pull`);
-        console.log('data', data);
-        cmd.runSync(`cd ${CONFIG_ROOT} & cd tool-vps & npm i yarn -g & yarn install`)
-        return true;
-    }
-    catch (e) {
-        console.log(e);
-        return false;
-    }
-}
 module.exports = {
     start_chrome_profile,
     stop_chrome_profile,
     create_chrome_profile,
-    reset_ngrok,
-    update_source_code
+    reset_ngrok
 };
