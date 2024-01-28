@@ -206,6 +206,32 @@ function readFileAsync(filePath) {
       });
   });
 }
+function readJsonFileAsync(filePath) {
+  return new Promise((resolve, reject) => {
+    fs.promises.readFile(filePath, 'utf8')
+      .then((data) => {
+        try {
+          resolve(JSON.parse(data));
+        }
+        catch (e){
+          resolve({});
+        }
+      })
+      .catch((err) => {
+        if (err.code === 'ENOENT') { // Kiểm tra lỗi "no such file or directory"
+          fs.promises.writeFile(filePath, '')
+            .then(() => {
+              resolve({});
+            })
+            .catch((err) => {
+              reject({});
+            });
+        } else {
+          reject(err);
+        }
+      });
+  });
+}
 function appendToLog(logFilePath, logData) {
   logData = logData + '\n'; // Thêm ký tự xuống dòng
   fs.appendFileSync(logFilePath, logData);
@@ -548,6 +574,7 @@ const helper = {
   getIdVideoFromEmbedLink,
   getPortCmd,
   generateRandomString,
-  shuffleAndSelectWords
+  shuffleAndSelectWords,
+  readJsonFileAsync
 }
 module.exports = helper;

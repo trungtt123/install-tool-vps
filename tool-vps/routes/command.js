@@ -132,6 +132,13 @@ async function start_chrome_profile(profile_id) {
         const database = await dbLocal.getData();
         const profiles = database.profiles || [];
         const profile = profiles.find(o => o.id === profile_id);
+        console.log('profile', profile);
+        const filePath = profile.path;
+        const localDataBrowser = await helper.readJsonFileAsync(`${filePath}\\Default\\Preferences`);
+        if (localDataBrowser?.browser?.window_placement){
+            localDataBrowser.browser.window_placement.maximized = true;
+        }
+        helper.overwriteFile(`${filePath}\\Default\\Preferences`, JSON.stringify(localDataBrowser));
         let result = helper.getPortCmd(`127.0.0.1`);
         let randomPort, randomCount = 100;
         while (!randomPort && randomCount > 0) {
