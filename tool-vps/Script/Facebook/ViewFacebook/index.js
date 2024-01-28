@@ -2,7 +2,7 @@ const helper = require('../../../Action/Helper/helper');
 const homeFacebook = require('./homeFacebook');
 const watchFacebook = require('./watchFacebook');
 async function index({browser, profileData, config}) {
-    const randStr = "1|2";
+    const randStr = "2"; //"1|2";
     const random = helper.getRandomPhrase(randStr, "|");
     switch (random) {
         case "1":

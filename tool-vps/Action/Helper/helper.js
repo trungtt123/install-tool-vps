@@ -158,6 +158,11 @@ function delay(time) {
     setTimeout(resolve, time * 1000)
   });
 }
+function randomDelay(min, max) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, randomFloat(min, max) * 1000)
+  });
+}
 function getDirectoriesRecursively(dirPath) {
   try {
     let directories = [];
@@ -515,24 +520,13 @@ function generateRandomString(minLength, maxLength) {
 }
 function shuffleAndSelectWords(sentence, percentage = 70) {
   try {
-
-    // Tách câu thành mảng các từ
     const words = sentence.split(' ');
-
-    // Tính toán số từ cần lấy dựa trên tỉ lệ nhập vào
-    const numWordsToSelect = Math.floor(words.length * (percentage / 100));
-
-    // Xáo trộn mảng từ
-    const shuffledWords = words.sort(() => Math.random() - 0.5);
-
-    // Lấy ra các từ theo số từ cần lấy
-    const selectedWords = shuffledWords.slice(0, numWordsToSelect);
-
-    // Ghép lại các từ để tạo câu mới
-    const shuffledSentence = selectedWords.join(' ');
-
+    const data = [];
+    for (const word of words){
+      if (randomInt(0, 100) < percentage) data.push(word);
+    }
+    const shuffledSentence = data.join(' ');
     return shuffledSentence || sentence;
-
   }
   catch (e) {
     return sentence;
@@ -575,6 +569,7 @@ const helper = {
   getPortCmd,
   generateRandomString,
   shuffleAndSelectWords,
-  readJsonFileAsync
+  readJsonFileAsync,
+  randomDelay
 }
 module.exports = helper;
