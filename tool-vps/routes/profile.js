@@ -312,13 +312,16 @@ const runWithScript = async (browser, profileData, filePath, scriptId, config) =
             case 'viewInstagram':
                 await instagram.viewInstagram({ browser, profileData, config });
                 break;
+            case 'followInstagram':
+                await instagram.followInstagram({ browser, profileData, config });
+                break;
             case 'viewTwitter_1':
                 await twitter.viewTwitter_1({ browser, profileData, filePath });
                 break;
             case 'loginFacebook_1':
                 await facebook.loginFacebook_1({ browser, profileData, filePath, config });
                 break;
-            case 'addFriend':
+            case 'addFriendFacebook':
                 await facebook.addFriend({ browser, profileData, config });
                 break;
             case 'viewFacebook':
