@@ -7,6 +7,7 @@ const { openUrl, reload, newTab, closeActiveTab } = require('../../../Action/Nav
 const { findActiveTab } = require('../../../Action/Helper/helper')
 const { pressKey } = require('../../../Action/Keyboard/keyboard');
 const { readAndDeleteLine } = require('../../../Action/Data/data');
+const navigation = require('../../../Action/Navigation/navigation');
 const helper = require('../../../Action/Helper/helper');
 const activateTabByDomain = require('../../../Action/Navigation/activeTabByDomain');
 const goBack = require('../../../Action/Navigation/goBack');
@@ -16,9 +17,9 @@ async function viewTwitter_1({browser, filePath}) {
     try {
         let process = true;
         let page;
-        page = await activateTabByDomain(browser, 'https://twitter.com/');
-        if (page) page = await openUrl(page, 'https://twitter.com/');
-        else page = await newTab(browser, 'https://twitter.com/');
+        page = await navigation.activateTabByDomain(browser, 'https://twitter.com/');
+        if (page) page = await navigation.openUrl(page, 'https://twitter.com/');
+        else page = await navigation.newTab(browser, 'https://twitter.com/');
         if (!page) {
             console.log('error tại vị trí open twitter');
             return false;
@@ -39,9 +40,9 @@ async function viewTwitter_1({browser, filePath}) {
         });
         // chờ load 
         await helper.delay(30);
-        // lướt xem các bài post, xem 20 bài viết
+        // lướt xem các bài post, xem 20-30 bài viết
         let cntPost = 0;
-        const maxViewPost = 20;
+        const maxViewPost = helper.randomInt(20, 30);
         while (cntPost < maxViewPost) {
             cntPost += await page.evaluate(async () => {
                 try {
@@ -63,9 +64,9 @@ async function viewTwitter_1({browser, filePath}) {
                             let btnLike = articles[i].querySelector(`div[data-testid='like']`);
                             let btnRetweet = articles[i].querySelector(`div[data-testid='retweet']`);
                             //follow 50%
-                            if (btnLike && randomFloat(0, 1) < 0.5) btnLike.click();
+                            if (btnLike && randomFloat(0, 1) < 0.2) btnLike.click();
                             //like 50%
-                            if (btnRetweet && randomFloat(0, 1) < 0.5) {
+                            if (btnRetweet && randomFloat(0, 1) < 0.2) {
                                 btnRetweet.click();
                                 let retweetConfirm = document.querySelector(`div[data-testid='Dropdown'] div[data-testid='retweetConfirm']`);
                                 retweetConfirm.click();
@@ -83,8 +84,8 @@ async function viewTwitter_1({browser, filePath}) {
             });
             await scrollRandom(page, helper.randomInt(1, 5), helper.randomFloat(250, 400));
         }
-        if (helper.randomFloat(0, 1) < 0.5) {
-            await closeActiveTab(page);
+        if (helper.randomFloat(0, 1) < 1) {
+            await navigation.closeActiveTab(page);
         }
         return true;
     }

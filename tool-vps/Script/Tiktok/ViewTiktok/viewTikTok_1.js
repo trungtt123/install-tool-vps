@@ -17,7 +17,7 @@ async function viewTikTok_1({browser, profileData, filePath}) {
         }
         await helper.delay(30);
         let indexLastVideo = -1;
-        const countVideo = helper.randomInt(8, 20);
+        const countVideo = helper.randomInt(20, 30);
         while (indexLastVideo < countVideo) {
             indexLastVideo = await page.evaluate(async (indexLastVideo) => {
                 function delay(time) {
@@ -35,9 +35,9 @@ async function viewTikTok_1({browser, profileData, filePath}) {
                         await delay(randomFloat(10, 50));
                         let btns = divs[i].querySelectorAll('button');
                         //follow 50%
-                        if (randomFloat(0, 1) < 0.5) btns[0].click();
+                        if (randomFloat(0, 1) < 0.2) btns[0].click();
                         //like 50%
-                        if (randomFloat(0, 1) < 0.5) btns[2].click()
+                        if (randomFloat(0, 1) < 0.2) btns[2].click()
                     }
                     catch (e) {
 
