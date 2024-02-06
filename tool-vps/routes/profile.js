@@ -318,6 +318,9 @@ const runWithScript = async (browser, profileData, filePath, scriptId, config) =
             case 'viewTwitter_1':
                 await twitter.viewTwitter_1({ browser, profileData, filePath });
                 break;
+            case 'postTwitter_1':
+                await twitter.postTwitter_1({ browser, profileData, filePath });
+                break;
             case 'loginFacebook_1':
                 await facebook.loginFacebook_1({ browser, profileData, filePath, config });
                 break;

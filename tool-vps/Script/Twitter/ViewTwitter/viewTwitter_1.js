@@ -40,9 +40,9 @@ async function viewTwitter_1({browser, filePath}) {
         });
         // chờ load 
         await helper.delay(30);
-        // lướt xem các bài post, xem 20-30 bài viết
+        // lướt xem các bài post, xem 40-50 bài viết
         let cntPost = 0;
-        const maxViewPost = helper.randomInt(20, 30);
+        const maxViewPost = helper.randomInt(40, 50);
         while (cntPost < maxViewPost) {
             cntPost += await page.evaluate(async () => {
                 try {
@@ -58,7 +58,7 @@ async function viewTwitter_1({browser, filePath}) {
                     // console.log('articles', articles.length);
                     for (let i = 0; i < articles.length; i++) {
                         try {
-                            articles[i].scrollIntoView();
+                            articles[i].scrollIntoView({ behavior: "smooth", block: "center"});
                             //random thời gian đọc
                             await delay(randomFloat(10, 30));
                             let btnLike = articles[i].querySelector(`div[data-testid='like']`);
