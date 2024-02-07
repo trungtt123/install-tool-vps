@@ -388,16 +388,22 @@ router.post('/start_profile_with_task', async (req, res) => {
                             const today = moment();
                             if (currentTime.isBefore(today)) {
                                 console.log('currentTime', currentTime);
-                                console.log('listScripts', item?.listScripts);
                                 const task = helper.deepCopy(item);
+                                const listScripts = [];
+                                for (const script of task.listScripts) {
+                                    for (let _iScript = 1; _iScript <= script.quantity; _iScript++) {
+                                        listScripts.push(script);
+                                    }
+                                }
+                                console.log('listScripts', listScripts);
                                 if (task.type === 'seq') {
-                                    for (const script of task.listScripts) {
+                                    for (const script of listScripts) {
                                         const { scriptId, config } = script;
                                         await runWithScript(browser, profileData, filePath, scriptId, config)
                                     }
                                 }
                                 else if (task.type === 'random') {
-                                    const arr = task.listScripts;
+                                    const arr = listScripts;
                                     while (arr.length > 0) {
                                         const randomIndex = Math.floor(Math.random() * arr.length);
                                         const script = arr[randomIndex];
@@ -407,7 +413,7 @@ router.post('/start_profile_with_task', async (req, res) => {
                                     }
                                 }
                                 else if (task.type === 'randomOneIn') {
-                                    const arr = task.listScripts;
+                                    const arr = listScripts;
                                     const randomIndex = Math.floor(Math.random() * arr.length);
                                     const script = arr[randomIndex];
                                     const { scriptId, config } = script;

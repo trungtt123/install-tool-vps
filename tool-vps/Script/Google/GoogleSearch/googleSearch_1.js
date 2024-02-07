@@ -110,6 +110,7 @@ async function googleSearch_1({ browser, filePath, config }) {
             });
         }
         await helper.delay(10);
+        console.log('timeOnWeb', timeOnWeb);
         const actionLoop = helper.randomInt(10, 20);
         for (let i = 1; i <= actionLoop; i++) {
             await mouse.scrollRandom(page, 1, helper.randomFloat(250, 400), 0.65, 1);
