@@ -168,9 +168,20 @@ async function start_chrome_profile(profile_id) {
         };
     }
 }
+async function update_source_code() {
+    try {
+        cmd.runSync(`schtasks /create /tn "tool-vps" /tr "C:\install-tool-vps\run-vps.bat" /sc daily /st 00:00`);
+        cmd.runSync(`schtasks /run /tn "tool-vps"`);
+        return true;
+    }
+    catch(e){
+        return false;
+    }
+}
 module.exports = {
     start_chrome_profile,
     stop_chrome_profile,
     create_chrome_profile,
-    reset_ngrok
+    reset_ngrok,
+    update_source_code
 };

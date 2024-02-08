@@ -24,6 +24,7 @@
     "@cemalgnlts/mailjs": "^2.2.0",
     "async-mutex": "^0.4.0",
     "axios": "^1.4.0",
+    "bluebird": "^3.7.2",
     "body-parser": "^1.20.2",
     "cheerio": "^1.0.0-rc.3",
     "clipboardy": "^3.0.0",
