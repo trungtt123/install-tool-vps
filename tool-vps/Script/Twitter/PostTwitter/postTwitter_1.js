@@ -10,10 +10,7 @@ const keyboard = require('../../../Action/Keyboard/keyboard');
 const posts = require('./posts');
 async function postTwitter_1({ browser, profileData, config }) {
     try {
-        let page;
-        page = await navigation.activateTabByDomain(browser, 'https://twitter.com/');
-        if (page) page = await navigation.openUrl(page, 'https://twitter.com/');
-        else page = await navigation.newTab(browser, 'https://twitter.com/');
+        let page = await navigation.newTab(browser, 'https://twitter.com/');
         if (!page) {
             console.log('error tại vị trí open twitter');
             return false;

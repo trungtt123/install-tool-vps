@@ -16,10 +16,7 @@ const scrollRandom = require('../../../Action/Mouse/scrollRandom');
 async function viewTwitter_1({browser, filePath}) {
     try {
         let process = true;
-        let page;
-        page = await navigation.activateTabByDomain(browser, 'https://twitter.com/');
-        if (page) page = await navigation.openUrl(page, 'https://twitter.com/');
-        else page = await navigation.newTab(browser, 'https://twitter.com/');
+        let page = await navigation.newTab(browser, 'https://twitter.com/');
         if (!page) {
             console.log('error tại vị trí open twitter');
             return false;
