@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const axios = require('axios');
 const helper = require('../Action/Helper/helper');
 const mobile_devices = require('../Constant/mobile_devices');
 
@@ -25,7 +26,10 @@ let customBrowser = [];
 router.get('/get_list_profiles', async (req, res) => {
     try {
         const database = await dbLocal.getData();
-        const profiles = database.profiles || [];
+        const result = await axios.get('https://api.ipify.org/?format=json');
+        const ip = result.data.ip;
+        let profiles = database.profiles || [];
+        profiles = profiles.map(o => { return { ...o, ip } });
         return res.status(200).send({
             code: "1000",
             message: "OK",
