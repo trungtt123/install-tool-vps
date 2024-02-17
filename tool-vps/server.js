@@ -21,8 +21,23 @@ mongoose.connect(url,
     .catch(err => console.log(`errors: ${err}`)
     );
 const axios = require('axios');
-app.get('/', async (req, res) => {
-    res.json('tool-vps');
+app.get('/ip', async (req, res) => {
+    try {
+        const result = await axios.get('https://api.ipify.org/?format=json');
+        console.log(result.data.ip);
+        return res.status(200).send({
+            code: "1000",
+            message: "OK",
+            ip: result.data.ip
+        });
+    }
+    catch (e){
+        return res.status(400).json({
+            code: "9999",
+            message: "FAILED",
+            reason: "Lỗi bất định"
+        });
+    }
 });
 
 app.use('/v1/profile', require('./routes/profile'));
