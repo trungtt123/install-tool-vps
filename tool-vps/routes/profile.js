@@ -20,6 +20,7 @@ const command = require('./command');
 const MobileDevice = require('../models/MobileDevice');
 const dbLocal = require('../Database/database');
 const moment = require('moment');
+let customBrowser = [];
 
 router.get('/get_list_profiles', async (req, res) => {
     try {

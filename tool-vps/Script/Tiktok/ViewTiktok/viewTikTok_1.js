@@ -7,10 +7,7 @@ const navigation = require('../../../Action/Navigation/navigation');
 const helper = require('../../../Action/Helper/helper');
 async function viewTikTok_1({browser, profileData, filePath}) {
     try {
-        let page;
-        page = await navigation.activateTabByDomain(browser, 'https://www.tiktok.com/');
-        if (page) page = await navigation.openUrl(page, 'https://www.tiktok.com/');
-        else page = await navigation.newTab(browser, 'https://www.tiktok.com/');
+        let page = await navigation.newTab(browser, 'https://www.tiktok.com/');
         if (!page) {
             console.log('error tại vị trí open tiktok');
             return false;
