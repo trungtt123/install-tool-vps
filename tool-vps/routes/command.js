@@ -91,7 +91,7 @@ async function create_chrome_profile(quantity) {
                 }
                 randomCount--;
             }
-            const profileName = `Profile-${moment().valueOf()}`;
+            const profileName = `Profile-${database.vpsId}-${moment().valueOf()}`;
             cmd.run(`"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe" --remote-debugging-port=${randomPort} --user-data-dir="${PROFILES_PATH}\\${profileName}"`);
             // lấy tiến trình của randomport
             await helper.delay(2);
