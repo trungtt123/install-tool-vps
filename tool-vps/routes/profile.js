@@ -29,7 +29,7 @@ router.get('/get_list_profiles', async (req, res) => {
         const result = await axios.get('https://api.ipify.org/?format=json');
         const ip = result.data.ip;
         let profiles = database.profiles || [];
-        profiles = profiles.map(o => { return { ...o, ip } });
+        profiles = profiles.map(o => { return { ...o, ip, vpsId: database.vpsId } });
         return res.status(200).send({
             code: "1000",
             message: "OK",
