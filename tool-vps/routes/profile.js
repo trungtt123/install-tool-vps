@@ -248,6 +248,28 @@ router.post('/add_proxy_profile', async (req, res) => {
         });
     }
 });
+router.post('/delete_profile', async (req, res) => {
+    try {
+        const { profiles } = req.body;
+        let database = await dbLocal.getData();
+        let tmpProfiles = database?.profiles || [];
+        database.profiles = tmpProfiles.filter(o => !profiles.find(profile => profile.id === o.id));
+        await dbLocal.updateData(database);
+
+        return res.status(200).send({
+            code: "1000",
+            message: "OK",
+        });
+    }
+    catch (e) {
+        console.error(e);
+        res.status(400).json({
+            code: "9999",
+            message: "FAILED",
+            reason: "Lỗi bất định"
+        });
+    }
+});
 const runWithScript = async (browser, profileData, filePath, scriptId, config) => {
     try {
         switch (scriptId) {
