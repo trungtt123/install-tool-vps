@@ -148,6 +148,48 @@ router.post('/add_mail_profile', async (req, res) => {
         });
     }
 });
+router.post('/add_facebook_profile', async (req, res) => {
+    try {
+        const { profiles, listFacebook } = req.body;
+        const inputFacebook = listFacebook.map(o => {
+            try {
+                let tmp = o?.split("|") || [];
+                return {
+                    email: tmp[0] || "",
+                    password: tmp[1] || ""
+                }
+            }
+            catch (e) {
+                console.log(e);
+            }
+        });
+        let database = await dbLocal.getData();
+        let tmpProfiles = database?.profiles || [];
+        for (const index in profiles) {
+            const profile = tmpProfiles.find(o => o.id == profiles[index].id);
+            if (!profile) continue;
+            if (index > listFacebook.length - 1 && !listFacebook[index]) continue;
+            const facebookData = {};
+            facebookData.email = inputFacebook[index].email;
+            facebookData.password = inputFacebook[index].password;
+            profile["facebook"] = facebookData;
+        }
+        database.profiles = tmpProfiles;
+        await dbLocal.updateData(database);
+        return res.status(200).send({
+            code: "1000",
+            message: "OK",
+        });
+    }
+    catch (e) {
+        console.error(e);
+        res.status(400).json({
+            code: "9999",
+            message: "FAILED",
+            reason: "Lỗi bất định"
+        });
+    }
+});
 router.post('/add_spotify_profile', async (req, res) => {
     try {
         const { profiles, listSpotify } = req.body;
