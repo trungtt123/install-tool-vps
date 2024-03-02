@@ -5,6 +5,7 @@ const helper = require('../Action/Helper/helper');
 const mobile_devices = require('../Constant/mobile_devices');
 
 const runLocalProfile = require('../Profile/runLocalProfile');
+const runGenloginProfile = require('../Profile/runGenloginProfile');
 const amazon = require('../Script/Amazon/index');
 const youtube = require('../Script/Youtube/index');
 const mail = require('../Script/Mail/index');
@@ -21,6 +22,7 @@ const command = require('./command');
 const MobileDevice = require('../models/MobileDevice');
 const dbLocal = require('../Database/database');
 const moment = require('moment');
+const os = require('os');
 let customBrowser = [];
 
 router.get('/get_list_profiles', async (req, res) => {
@@ -28,8 +30,35 @@ router.get('/get_list_profiles', async (req, res) => {
         const database = await dbLocal.getData();
         const result = await axios.get('https://api.ipify.org/?format=json');
         const ip = result.data.ip;
-        let profiles = database.profiles || [];
-        profiles = profiles.map(o => { return { ...o, ip, vpsId: database.vpsId } });
+        let profiles = database.profiles;
+        const genloginProfiles = (await axios.get('http://localhost:55550/backend/profiles')).data.data.items || [];
+        for (const genloginProfile of genloginProfiles){
+            const profile = profiles.find(o => o.genloginId === genloginProfile.id);
+            if (!profile) {
+                const folder = btoa(`${genloginProfile.user_id}-${genloginProfile.id}-${moment().valueOf()}`);
+                profiles.push({
+                    id: folder,
+                    genloginId: genloginProfile.id,
+                    genloginUserId: genloginProfile.user_id,
+                    name: genloginProfile.profile_data.name,
+                    path: `C:\\install-tool-vps\\Profiles\\${folder}`,
+                    groupId: '',
+                    vpsId: database?.vpsId,
+                    vpsName: os.hostname()
+                })
+            }
+        }
+        profiles = profiles.filter(o => {
+            const genloginProfile = genloginProfiles.find(genloginProfile => genloginProfile.id === o.genloginId);
+            return !!genloginProfile
+        })
+        database.profiles = profiles;
+        await dbLocal.updateData(database);
+        profiles = profiles.map(o => { 
+            const genloginProfile = genloginProfiles.find(genloginProfile => genloginProfile.id === o.genloginId);
+            const proxy = `${genloginProfile.profile_data.proxy.host}:${genloginProfile.profile_data.proxy.port}:${genloginProfile.profile_data.proxy.login}:${genloginProfile.profile_data.proxy.password}`
+            return { ...o, ip, proxy, vpsId: database.vpsId } 
+        });
         return res.status(200).send({
             code: "1000",
             message: "OK",
@@ -63,7 +92,10 @@ router.get('/create_profile', async (req, res) => {
 router.get('/start_profile', async (req, res) => {
     try {
         const { profile_id } = req.query;
-        const data = await command.start_chrome_profile(profile_id);
+        // const data = await command.start_chrome_profile(profile_id);
+        const database = await dbLocal.getData();
+        const profile = database.profiles.find(o => o.id === profile_id);
+        const data =  (await axios.put(`http://localhost:55550/backend/profiles/${profile.genloginId}/start`)).data
         return res.status(200).send(data);
     }
     catch (e) {
@@ -78,7 +110,9 @@ router.get('/start_profile', async (req, res) => {
 router.get('/stop_profile', async (req, res) => {
     try {
         const { profile_id } = req.query;
-        const data = await command.stop_chrome_profile(profile_id);
+        const database = await dbLocal.getData();
+        const profile = database.profiles.find(o => o.id === profile_id);
+        const data =  (await axios.put(`http://localhost:55550/backend/profiles/${profile.genloginId}/stop`)).data
         return res.status(200).send(data);
     }
     catch (e) {
@@ -447,8 +481,12 @@ router.post('/start_profile_with_task', async (req, res) => {
             try {
                 const filePath = `${profiles[i].path}`;
                 const profileData = database?.profiles?.find(o => o.id == profiles[i].id);
+                /*
                 let dataRunProfile = await command.start_chrome_profile(profiles[i].id);
-                browser = await runLocalProfile(dataRunProfile.selenium_remote_debug_address);
+                browser = await runLocalProfile(dataRunProfile.selenium_remote_debug_address); 
+                */
+                await axios.put(`http://localhost:55550/backend/profiles/${profileData.genloginId}/stop`)
+                browser = await runGenloginProfile(profileData.genloginId);
                 for await (const item of listTask) {
                     let run = true;
                     const currentTime = moment(item?.time, 'HH:mm');
@@ -464,7 +502,7 @@ router.post('/start_profile_with_task', async (req, res) => {
                                         listScripts.push(script);
                                     }
                                 }
-                                console.log('listScripts', listScripts);
+                                // console.log('listScripts', listScripts);
                                 if (task.type === 'seq') {
                                     for (const script of listScripts) {
                                         const { scriptId, config } = script;
@@ -497,15 +535,14 @@ router.post('/start_profile_with_task', async (req, res) => {
                             run = false;
                         }
                     }
-
                 }
-
             }
             catch (e) {
                 console.log('Error', e);
             }
             await browser?.close();
-            await command.stop_chrome_profile(profiles[i].id);
+            // await command.stop_chrome_profile(profiles[i].id);
+            await axios.put(`http://localhost:55550/backend/profiles/${profileData.genloginId}/stop`)
             return i;
         }
         let maxThread = Math.min(profiles.length, thread);
