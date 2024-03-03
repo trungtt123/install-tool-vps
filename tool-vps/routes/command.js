@@ -41,11 +41,12 @@ async function checkOrResetNgrokActive() {
         if (vps && vps.ngrokAuth){
             cmd.runSync(`cd ${NGROK_PATH} && ngrok config add-authtoken ${vps.ngrokAuth}`);
         }
+        console.log('NGROK_PATH', NGROK_PATH)
         cmd.run(`cd ${NGROK_PATH} && ngrok http 7070`);
         await helper.delay(5);
     }
     catch (e) {
-        // console.log(e);
+        console.log(e);
     }
 }
 async function reset_ngrok() {
@@ -92,7 +93,9 @@ async function create_chrome_profile(quantity) {
                 randomCount--;
             }
             const profileName = `Profile-${database.vpsId}-${moment().valueOf()}`;
-            cmd.run(`"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe" --remote-debugging-port=${randomPort} --user-data-dir="${PROFILES_PATH}\\${profileName}"`);
+            cmd.run(`"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe" 
+            --hide-crash-restore-bubble
+            --remote-debugging-port=${randomPort} --user-data-dir="${PROFILES_PATH}\\${profileName}"`);
             // lấy tiến trình của randomport
             await helper.delay(2);
             profiles.push({

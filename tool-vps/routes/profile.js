@@ -31,8 +31,11 @@ router.get('/get_list_profiles', async (req, res) => {
         const result = await axios.get('https://api.ipify.org/?format=json');
         const ip = result.data.ip;
         let profiles = database.profiles;
+        // default profile
+        profiles = profiles.map(o => { return { ...o, ip, vpsId: database.vpsId } });
+        /* gen login 
         const genloginProfiles = (await axios.get('http://localhost:55550/backend/profiles')).data.data.items || [];
-        for (const genloginProfile of genloginProfiles){
+        for (const genloginProfile of genloginProfiles) {
             const profile = profiles.find(o => o.genloginId === genloginProfile.id);
             if (!profile) {
                 const folder = btoa(`${genloginProfile.user_id}-${genloginProfile.id}-${moment().valueOf()}`);
@@ -54,11 +57,13 @@ router.get('/get_list_profiles', async (req, res) => {
         })
         database.profiles = profiles;
         await dbLocal.updateData(database);
-        profiles = profiles.map(o => { 
+        
+        profiles = profiles.map(o => {
             const genloginProfile = genloginProfiles.find(genloginProfile => genloginProfile.id === o.genloginId);
             const proxy = `${genloginProfile.profile_data.proxy.host}:${genloginProfile.profile_data.proxy.port}:${genloginProfile.profile_data.proxy.login}:${genloginProfile.profile_data.proxy.password}`
-            return { ...o, ip, proxy, vpsId: database.vpsId } 
+            return { ...o, ip, proxy, vpsId: database.vpsId }
         });
+        */
         return res.status(200).send({
             code: "1000",
             message: "OK",
@@ -92,10 +97,12 @@ router.get('/create_profile', async (req, res) => {
 router.get('/start_profile', async (req, res) => {
     try {
         const { profile_id } = req.query;
-        // const data = await command.start_chrome_profile(profile_id);
+        const data = await command.start_chrome_profile(profile_id);
         const database = await dbLocal.getData();
+        /* gen login
         const profile = database.profiles.find(o => o.id === profile_id);
         const data =  (await axios.put(`http://localhost:55550/backend/profiles/${profile.genloginId}/start`)).data
+        */
         return res.status(200).send(data);
     }
     catch (e) {
@@ -110,9 +117,12 @@ router.get('/start_profile', async (req, res) => {
 router.get('/stop_profile', async (req, res) => {
     try {
         const { profile_id } = req.query;
+        const data = await command.stop_chrome_profile(profile_id);
         const database = await dbLocal.getData();
+        /* gen login
         const profile = database.profiles.find(o => o.id === profile_id);
         const data =  (await axios.put(`http://localhost:55550/backend/profiles/${profile.genloginId}/stop`)).data
+        */
         return res.status(200).send(data);
     }
     catch (e) {
@@ -481,12 +491,14 @@ router.post('/start_profile_with_task', async (req, res) => {
             try {
                 const filePath = `${profiles[i].path}`;
                 const profileData = database?.profiles?.find(o => o.id == profiles[i].id);
-                /*
+
                 let dataRunProfile = await command.start_chrome_profile(profiles[i].id);
-                browser = await runLocalProfile(dataRunProfile.selenium_remote_debug_address); 
-                */
-                await axios.put(`http://localhost:55550/backend/profiles/${profileData.genloginId}/stop`)
-                browser = await runGenloginProfile(profileData.genloginId);
+                browser = await runLocalProfile(dataRunProfile.selenium_remote_debug_address);
+
+                /* gen login 
+                 await axios.put(`http://localhost:55550/backend/profiles/${profileData.genloginId}/stop`)
+                 browser = await runGenloginProfile(profileData.genloginId);
+                 */
                 for await (const item of listTask) {
                     let run = true;
                     const currentTime = moment(item?.time, 'HH:mm');
@@ -541,8 +553,8 @@ router.post('/start_profile_with_task', async (req, res) => {
                 console.log('Error', e);
             }
             await browser?.close();
-            // await command.stop_chrome_profile(profiles[i].id);
-            await axios.put(`http://localhost:55550/backend/profiles/${profileData.genloginId}/stop`)
+            await command.stop_chrome_profile(profiles[i].id);
+            // await axios.put(`http://localhost:55550/backend/profiles/${profileData.genloginId}/stop`)
             return i;
         }
         let maxThread = Math.min(profiles.length, thread);
