@@ -153,11 +153,11 @@ async function start_chrome_profile(profile_id) {
         profile.port = randomPort;
         database.profiles = profiles;
         await dbLocal.updateData(database);
-        const oldProxyUrl = `http://${profile.proxy.split(":")[2]}:${profile.proxy.split(":")[3]}@${profile.proxy.split(":")[0]}:${profile.proxy.split(":")[1]}`;
-        const newProxyUrl = await proxyChain.anonymizeProxy(oldProxyUrl);
+        const oldProxyUrl = !profile.proxy ? `` : `http://${profile.proxy.split(":")[2]}:${profile.proxy.split(":")[3]}@${profile.proxy.split(":")[0]}:${profile.proxy.split(":")[1]}`;
+        const newProxyUrl = !profile.proxy ? `` : await proxyChain.anonymizeProxy(oldProxyUrl);
         console.log('newProxyUrl', newProxyUrl);
         const proxyArg = !profile.proxy ? `` : `--proxy-server=${newProxyUrl}`
-        cmd.run(`"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe" --hide-crash-restore-bubble --remote-debugging-port=${randomPort} --user-data-dir="${profile.path}" --proxy-server=${proxyArg}`);
+        cmd.run(`"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe" --hide-crash-restore-bubble --remote-debugging-port=${randomPort} --user-data-dir="${profile.path}" ${proxyArg}`);
         
         return {
             status: "true",
