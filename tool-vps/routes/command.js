@@ -9,6 +9,7 @@ const os = require('os');
 const cron = require('node-cron');
 const Vps = require('../models/Vps');
 const dbLocal = require('../Database/database');
+const proxyChain = require('proxy-chain');
 
 async function getVpsInfo() {
     try {
@@ -152,9 +153,11 @@ async function start_chrome_profile(profile_id) {
         profile.port = randomPort;
         database.profiles = profiles;
         await dbLocal.updateData(database);
+        const oldProxyUrl = `http://${profile.proxy.split(":")[2]}:${profile.proxy.split(":")[3]}@${profile.proxy.split(":")[0]}:${profile.proxy.split(":")[1]}`;
+        const newProxyUrl = await proxyChain.anonymizeProxy(oldProxyUrl);
+        console.log('newProxyUrl', newProxyUrl);
         const proxyArg = !profile.proxy ? `` : `--proxy-server=${profile.proxy.split(":")[0] + ":" + profile.proxy.split(":")[1]}`
-        console.log(`"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe" --remote-debugging-port=${randomPort} --user-data-dir="${profile.path}" ${proxyArg}`);
-        cmd.run(`"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe" --hide-crash-restore-bubble --remote-debugging-port=${randomPort} --user-data-dir="${profile.path}" ${proxyArg}`);
+        cmd.run(`"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe" --hide-crash-restore-bubble --remote-debugging-port=${randomPort} --user-data-dir="${profile.path}" --proxy-server=${newProxyUrl}`);
         
         return {
             status: "true",
