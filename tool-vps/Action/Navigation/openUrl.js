@@ -3,7 +3,7 @@ const helper = require('../Helper/helper');
 const keyboard = require('../Keyboard/keyboard');
 const fs = require('fs');
 const path = require('path');
-const { API_PYTHON_URL } = require('../../const');
+const { API_PYTHON_URL, PYTHON_VPS_PATH } = require('../../const');
 async function openUrl(page, url, config = {}) {
   try {
     await page.goto(url, { timeout: 60 * 1000 });
@@ -43,7 +43,7 @@ async function openUrl(page, url, config = {}) {
           }
         });
         console.log("fileUrl", fileUrl);
-        const folderPath = __pythonService + "\\python-service\\Service\\SpeechToText\\file";
+        const folderPath = PYTHON_VPS_PATH + "\\python-service\\Service\\SpeechToText\\file";
         const fileName = `audio_${(new Date()).getTime()}`;
         const filePath = path.join(folderPath, fileName + ".mp3");
         // tải file audio
