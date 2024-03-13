@@ -40,6 +40,26 @@ app.get('/ip', async (req, res) => {
     }
 });
 
+app.get('/test-api', async (req, res) => {
+    try {
+        const result = await axios.get('http://rd-demo-6xx.japaneast.cloudapp.azure.com/services/api/search/achievements?systemid=000&apikey=2202a4b34a244158a7af793747cd52fa');
+        delete result.data;
+        console.log(result);
+        return res.status(200).send({
+            code: "1000",
+            message: "OK",
+            data: result.data
+        });
+    }
+    catch (e){
+        return res.status(400).json({
+            code: "9999",
+            message: "FAILED",
+            reason: "Lỗi bất định"
+        });
+    }
+});
+
 app.use('/v1/profile', require('./routes/profile'));
 app.use('/v1/vps', require('./routes/vps'));
 
