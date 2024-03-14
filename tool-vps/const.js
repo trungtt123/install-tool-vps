@@ -8,6 +8,7 @@ const DATABASE_URL = process.env.DATABASE_URL;
 const PROFILES_PATH = process.env.PROFILES_PATH;
 const NGROK_PATH = process.env.NGROK_PATH;
 const PYTHON_VPS_PATH = process.env.PYTHON_VPS_PATH;
+const DEFAULT_CHROME_PROFILE_PATH = process.env.DEFAULT_CHROME_PROFILE_PATH;
 module.exports = {
     API_PYTHON_URL,
     CONFIG_ROOT,
@@ -17,5 +18,6 @@ module.exports = {
     DATABASE_URL,
     PROFILES_PATH,
     NGROK_PATH,
-    PYTHON_VPS_PATH
+    PYTHON_VPS_PATH,
+    DEFAULT_CHROME_PROFILE_PATH
 };
