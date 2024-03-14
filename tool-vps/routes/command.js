@@ -6,6 +6,7 @@ const moment = require('moment');
 const { API_NGROK_URL, CONFIG_ROOT, PROFILES_PATH, NGROK_PATH } = require('../const');
 const cmd = require('node-cmd');
 const os = require('os');
+const fs = require('fs');
 const cron = require('node-cron');
 const Vps = require('../models/Vps');
 const dbLocal = require('../Database/database');
@@ -94,6 +95,7 @@ async function create_chrome_profile(quantity) {
                 randomCount--;
             }
             const profileName = `Profile-${database.vpsId}-${moment().valueOf()}`;
+            fs.cpSync(`C:\\install-tool-vps\\default-chrome-profile`, `${PROFILES_PATH}\\${profileName}`, { recursive: true, overwrite: true });
             cmd.run(`"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe" --remote-debugging-port=${randomPort} --user-data-dir="${PROFILES_PATH}\\${profileName}"`);
             // lấy tiến trình của randomport
             await helper.delay(2);
@@ -111,7 +113,7 @@ async function create_chrome_profile(quantity) {
             await dbLocal.updateData(database);
             result = helper.getPortCmd(`127.0.0.1:${randomPort}`);
             const pid = result?.[0]?.pid;
-            cmd.run(`taskkill /F /PID ${pid}`)
+            cmd.run(`taskkill /F /PID ${pid}`);
         }
         return {
             code: "1000",
