@@ -339,9 +339,21 @@ router.post('/delete_profile', async (req, res) => {
         const { profiles } = req.body;
         let database = await dbLocal.getData();
         let tmpProfiles = database?.profiles || [];
+        for (let profile of profiles){
+            profile = tmpProfiles.find(o => profile.id === o.id);
+            console.log('profile.path', profile.path);
+            if (profile?.path) {
+                try {
+                    await helper.deleteFolderRecursive(profile.path)
+                }
+                catch (e){
+
+                }
+
+            }
+        }
         database.profiles = tmpProfiles.filter(o => !profiles.find(profile => profile.id === o.id));
         await dbLocal.updateData(database);
-
         return res.status(200).send({
             code: "1000",
             message: "OK",

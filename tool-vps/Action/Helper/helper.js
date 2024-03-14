@@ -532,6 +532,29 @@ function shuffleAndSelectWords(sentence, percentage = 70) {
     return sentence;
   }
 }
+function deleteFolderRecursive(pathToFolder) {
+  return new Promise((resolve, reject) => {
+      // Kiểm tra xem thư mục tồn tại hay không
+      fs.access(pathToFolder, (error) => {
+          if (error) {
+              console.error('Thư mục không tồn tại hoặc không thể truy cập:', error);
+              reject(error);
+              return;
+          }
+
+          // Xóa thư mục
+          fs.rm(pathToFolder, { recursive: true }, (error) => {
+              if (error) {
+                  console.error('Không thể xóa thư mục:', error);
+                  resolve(error);
+                  return;
+              }
+              console.log('Thư mục đã được xóa thành công.');
+              resolve();
+          });
+      });
+  });
+}
 const helper = {
   findActiveTab,
   delay,
@@ -570,6 +593,7 @@ const helper = {
   generateRandomString,
   shuffleAndSelectWords,
   readJsonFileAsync,
-  randomDelay
+  randomDelay,
+  deleteFolderRecursive
 }
 module.exports = helper;
