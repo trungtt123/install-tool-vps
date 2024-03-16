@@ -1,7 +1,6 @@
 const navigation = require('../../../Action/Navigation/navigation');
 const keyboard = require('../../../Action/Keyboard/keyboard');
 const helper = require('../../../Action/Helper/helper');
-const Mail = require('../../../models/Mail');
 const dbLocal = require('../../../Database/database');
 async function loginMail_1({browser, profileData, filePath}) {
     try {

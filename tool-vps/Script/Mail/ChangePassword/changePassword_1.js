@@ -1,8 +1,12 @@
 const navigation = require('../../../Action/Navigation/navigation');
 const keyboard = require('../../../Action/Keyboard/keyboard');
 const helper = require('../../../Action/Helper/helper');
+const dbLocal = require('../../../Database/database');
 async function changePassword_1({browser, filePath, config}) {
     try {
+        let database = await dbLocal.getData();
+        let profile = database?.profiles?.find(o => o.id.toString() === profileData.id.toString());
+        if (!profile) return false;
         let { listNewMail } = config;
         if (!listNewMail) listNewMail = "";
         listNewMail = listNewMail.trim().split('\n');
@@ -15,12 +19,10 @@ async function changePassword_1({browser, filePath, config}) {
             return false;
         }
         await helper.delay(20);
-        let tmp = '';
-        tmp = await helper.readFileAsync(filePath + "\\mail.txt");
-        tmp = tmp.split("|");
-        let username = tmp[0];
-        let password = tmp[1];
-        let mailReco = tmp[2];
+        const mailData = profile.mail
+        let username = mailData.email;
+        let password = mailData.password;
+        let mailReco = mailData.recoverEmail;
         let newData = listNewMail.find(o => o.includes(username));
         if (!newData) return true;
         let newPassword = newData.split("|")[1];
