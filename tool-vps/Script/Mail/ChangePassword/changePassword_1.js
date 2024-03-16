@@ -2,7 +2,7 @@ const navigation = require('../../../Action/Navigation/navigation');
 const keyboard = require('../../../Action/Keyboard/keyboard');
 const helper = require('../../../Action/Helper/helper');
 const dbLocal = require('../../../Database/database');
-async function changePassword_1({browser, filePath, config}) {
+async function changePassword_1({browser, profileData, config}) {
     try {
         let database = await dbLocal.getData();
         let profile = database?.profiles?.find(o => o.id.toString() === profileData.id.toString());
@@ -97,9 +97,10 @@ async function changePassword_1({browser, filePath, config}) {
         const currentURL = await page.url();
         console.log('currentURL', currentURL);
         if (currentURL.includes('https://myaccount.google.com/security-checkup-welcome')){
-            helper.overwriteFile(`${filePath + "\\mail.txt"}`, `${username}|${newPassword}|${mailReco}`);
-            helper.createLogFile(filePath + "\\mail-log", 'change-password-mail.txt');
-            helper.overwriteFile(filePath + "\\mail-log\\change-password-mail.txt", 'true');
+            let database = await dbLocal.getData();
+            const profile = database?.profiles?.find(o => o.id.toString() === profileData.id.toString());
+            profile['changePassword'] = true;
+            await dbLocal.updateData(database);
         }
         return true;
     }
