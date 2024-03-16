@@ -95,7 +95,7 @@ async function create_chrome_profile(quantity) {
                 randomCount--;
             }
             const profileName = `Profile-${database.vpsId}-${moment().valueOf()}`;
-            fs.cpSync(`${DEFAULT_CHROME_PROFILE_PATH}`, `${PROFILES_PATH}\\${profileName}`, { recursive: true, overwrite: true });
+            // fs.cpSync(`${DEFAULT_CHROME_PROFILE_PATH}`, `${PROFILES_PATH}\\${profileName}`, { recursive: true, overwrite: true });
             cmd.run(`"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe" --remote-debugging-port=${randomPort} --user-data-dir="${PROFILES_PATH}\\${profileName}"`);
             await helper.delay(2);
             profiles.push({
