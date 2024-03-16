@@ -57,7 +57,7 @@ async function loginMail_1({browser, profileData, filePath}) {
             await helper.delay(30);
             //check nhập mail recovery
             process = await page.evaluate(() => {
-                const btnMail = document.querySelectorAll('div.vxx8jf')[2];
+                const btnMail = document.querySelector('div[data-challengeid="5"]');
                 if (btnMail) {
                     btnMail.click();
                     return true;
