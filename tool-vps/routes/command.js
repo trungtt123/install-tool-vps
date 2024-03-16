@@ -158,7 +158,7 @@ async function start_chrome_profile(profile_id) {
         const newProxyUrl = !profile.proxy ? `` : await proxyChain.anonymizeProxy(oldProxyUrl);
         console.log('newProxyUrl', newProxyUrl);
         const proxyArg = !profile.proxy ? `` : `--proxy-server=${newProxyUrl}`
-        cmd.run(`"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe" --hide-crash-restore-bubble --remote-debugging-port=${randomPort} --user-data-dir="${profile.path}" ${proxyArg}`);
+        cmd.run(`"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"  --no-first-run --no-default-browser-check --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-renderer-backgrounding --metrics-recording-only --hide-crash-restore-bubble --disable-async-dns --remote-debugging-port=${randomPort} --user-data-dir="${profile.path}" ${proxyArg}`);
         
         return {
             status: "true",
