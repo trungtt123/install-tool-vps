@@ -23,6 +23,7 @@ const MobileDevice = require('../models/MobileDevice');
 const dbLocal = require('../Database/database');
 const moment = require('moment');
 const os = require('os');
+const navigation = require('../Action/Navigation/navigation');
 let customBrowser = [];
 
 router.get('/get_list_profiles', async (req, res) => {
@@ -104,6 +105,27 @@ router.get('/start_profile', async (req, res) => {
         const data =  (await axios.put(`http://localhost:55550/backend/profiles/${profile.genloginId}/start`)).data
         */
         return res.status(200).send(data);
+    }
+    catch (e) {
+        console.log(e);
+        return res.status(400).json({
+            code: "9999",
+            message: "FAILED",
+            reason: "Lỗi bất định"
+        });
+    }
+})
+router.post('/start_profile_with_url', async (req, res) => {
+    try {
+        const { profile_id, url } = req.body;
+        let dataRunProfile = await command.start_chrome_profile(profile_id);
+        let browser = await runLocalProfile(dataRunProfile.selenium_remote_debug_address);
+        await navigation.newTab(browser, url);
+        /* gen login
+        const profile = database.profiles.find(o => o.id === profile_id);
+        const data =  (await axios.put(`http://localhost:55550/backend/profiles/${profile.genloginId}/start`)).data
+        */
+        return res.status(200).send(dataRunProfile);
     }
     catch (e) {
         console.log(e);
