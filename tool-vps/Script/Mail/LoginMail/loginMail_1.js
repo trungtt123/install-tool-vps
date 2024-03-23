@@ -46,6 +46,12 @@ async function loginMail_1({browser, profileData, filePath}) {
         let username = mailData.email;
         let password = mailData.password;
         let mailReco = mailData.recoverEmail;
+        database = await dbLocal.getData();
+        profile = database?.profiles?.find(o => o.id.toString() === profileData.id.toString());
+        let mail = profile?.mail || {};
+        mail["isLogin"] = isLogin;
+        profile["mail"] = mail;
+        await dbLocal.updateData(database);
         if (!isLogin) {
             process = await page.focus('input#identifierId');
             process = await keyboard.pressKey(page, username);
@@ -106,7 +112,7 @@ async function loginMail_1({browser, profileData, filePath}) {
         console.log("isLogin", isLogin);
         database = await dbLocal.getData();
         profile = database?.profiles?.find(o => o.id.toString() === profileData.id.toString());
-        let mail = profile?.mail || {};
+        mail = profile?.mail || {};
         mail["isLogin"] = isLogin;
         profile["mail"] = mail;
         await dbLocal.updateData(database);
